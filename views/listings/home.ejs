@@ -1,0 +1,49 @@
+<% layout("/layouts/boilerplate") -%>
+<body>
+  <div class="container-lg">
+    <div class="py-3 d-flex">
+      <div class="fs-2 fs-sm-3 home-icons">
+        <a href="/listings?q=Villa"><i class="fa-solid fa-house px-1 px-sm-2"></i></a>
+        <a href="/listings?q=Mountains"
+          ><i class="fa-solid fa-mountain-sun px-1 px-sm-2"></i
+        ></a>
+        <a href="/listings?q=Loft"><i class="fa-solid fa-sailboat px-1 px-sm-2"></i></a>
+        <a href="/listings?q=Camp"><i class="fa-solid fa-tents px-1 px-sm-2"></i></a>
+        <a href="/listings?q=Beach"
+          ><i class="fa-solid fa-umbrella-beach px-1 px-sm-2"></i
+        ></a>
+      </div>
+
+      <div class="form-check form-switch ms-auto mt-1 showTaxes">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          role="switch"
+          id="switchCheckDefault" />
+        <label class="form-check-label fs-6" for="switchCheckDefault"
+          ><i><b>GST</b></i></label
+        >
+      </div>
+    </div>
+
+    <div class="row">
+      <% for (let val of data) { %>
+      <div class="col-sm-6 col-md-4">
+        <div class="card">
+          <a href="/listings/<%= val.id %>">
+            <img
+              src="<%= val.image.url %>"
+              class="card-img-top"
+              alt="..."
+              style="height: 18rem" />
+          </a>
+          <div class="card-body">
+            <b><p class="card-text"><%= val.title %></p></b>
+            <p class="card-text price">&#8377; <%= val.price %> /night</p>
+          </div>
+        </div>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</body>

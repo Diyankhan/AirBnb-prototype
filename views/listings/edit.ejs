@@ -1,0 +1,110 @@
+<% layout('./layouts/boilerplate') -%>
+<h3 class="text-center py-2">Update Data</h3>
+<form
+  class="row g-3 px-4 mb-2 needs-validation"
+  method="post"
+  action="/listings/<%= listing.id %>?_method=PUT"
+  enctype="multipart/form-data"
+  novalidate>
+  <div class="col-md-6">
+    <label for="title4" class="form-label">Title</label>
+    <input
+      type="text"
+      class="form-control"
+      id="title4"
+      value="<%= listing.title%>"
+      name="listing[title]"
+      required />
+    <div class="invalid-feedback">Please provide a valid title.</div>
+    <div class="valid-feedback">Looks good</div>
+  </div>
+
+  <div class="col-md-6">
+    <label for="image4" class="form-label">Image</label>
+    <input type="file" class="form-control" id="image4" name="listing[image]" value="<%= listing.image.url %>" />
+    <div class="invalid-feedback">Please provide a valid img link.</div>
+    <div class="valid-feedback">Looks good</div>
+  </div>
+
+ 
+
+  <div class="col-md-6">
+    <label for="description4" class="form-label">Description</label>
+    <textarea
+      name="listing[description]"
+      id="description4"
+      class="form-control"
+      rows="4"
+      required>
+<%= listing.description%></textarea
+    >
+    <div class="invalid-feedback">Please provide a valid Description.</div>
+    <div class="valid-feedback">Looks good</div>
+  </div>
+
+  <div class="col-3">
+    <img
+      src="<%= originalUrl%>"
+      alt=""
+      class="img-fluid"
+      style="max-height: 200px" />
+  </div>
+
+  <div>
+  <label for="category">Choose Category</label>
+  <select name="listing[category]" id="category" required>
+    <option value="Mountains">Mountains</option>
+    <option value="Beach">Beach</option>
+    <option value="Camp">camp</option>
+    <option value="Apartment">Apartment</option>
+    <option value="Villa">villa</option>
+    <option value="Loft">loft</option>
+    <option value="Other">other</option>
+  </select> 
+</div>  
+
+<div class="col-12">
+  <div class="col-md-4">
+    <label for="price4" class="form-label">Price</label>
+    <input
+      type="text"
+      class="form-control"
+      id="price4"
+      value="<%= listing.price%>"
+      name="listing[price]"
+      required />
+    <div class="invalid-feedback">Please provide a valid price.</div>
+    <div class="valid-feedback">Looks good</div>
+  </div>
+  </div>
+
+  <div class="col-md-6">
+    <label for="country4" class="form-label">Country</label>
+    <input
+      type="text"
+      class="form-control"
+      id="country4"
+      value="<%= listing.country%>"
+      name="listing[country]"
+      required />
+    <div class="invalid-feedback">Please provide a valid country.</div>
+    <div class="valid-feedback">Looks good</div>
+  </div>
+
+  <div class="col-md-6">
+    <label for="location4" class="form-label">Location</label>
+    <input
+      type="text"
+      class="form-control"
+      id="location4"
+      value="<%= listing.location %>"
+      name="listing[location]"
+      required />
+    <div class="invalid-feedback">Please provide a valid location.</div>
+    <div class="valid-feedback">Looks good</div>
+  </div>
+
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Update</button>
+  </div>
+</form>
