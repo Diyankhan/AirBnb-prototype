@@ -43,7 +43,7 @@ app.listen(port, console.log(`Server is running at port ${port}`));
 const store = MongoStore.create({ 
   mongoUrl: process.env.DB_URL,
   crypto: {
-    secret: 'mysuperSecretCode'
+    secret: process.env.SECRET
   },
   touchAfter: 24 * 3600
 
@@ -51,7 +51,7 @@ const store = MongoStore.create({
 
 const sessionSecret = {
   store,
-  secret: "mysuperSecretCode",
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
