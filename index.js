@@ -4,52 +4,47 @@ const app = express();
 const path = require("path");
 const ejsMate = require("ejs-mate");
 const mongoose = require("mongoose");
+
 const listingsRouter = require("./routes/listings.js");
 const reviewsRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
-const cookieParser = require("cookie-parser");
+
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
+
 const User = require("./models/user.js");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 
+// ================= DATABASE =================
 async function main() {
   await mongoose.connect(process.env.DB_URL);
 }
 
-main()
-  .then((res) => {
-    console.log("MongoDb connected");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+// ================= PORT =================
+const PORT = process.env.PORT || 3000;
 
+// ================= VIEW ENGINE =================
 app.set("views", path.join(__dirname, "views"));
-app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
 app.engine("ejs", ejsMate);
 
-app.use(express.static("public"));
+// ================= MIDDLEWARE =================
+app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
-const port = 3000;
-
-app.listen(port, console.log(`Server is running at port ${port}`));
-
-const store = MongoStore.create({ 
+// ================= SESSION STORE =================
+const store = MongoStore.create({
   mongoUrl: process.env.DB_URL,
   crypto: {
-    secret: process.env.SECRET
+    secret: process.env.SECRET,
   },
-  touchAfter: 24 * 3600
-
+  touchAfter: 24 * 3600,
 });
 
-const sessionSecret = {
+const sessionConfig = {
   store,
   secret: process.env.SECRET,
   resave: false,
@@ -61,15 +56,54 @@ const sessionSecret = {
   },
 };
 
-app.use(session(sessionSecret));
+app.use(session(sessionConfig));
 app.use(flash());
 
+// ================= PASSPORT =================
 app.use(passport.initialize());
 app.use(passport.session());
+
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+// ================= GLOBAL VARIABLES =================
+app.use((req, res, next) => {
+  res.locals.currUser = req.user;
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+});
+
+// ================= ROUTES =================
+app.use("/listings", listingsRouter);
+app.use("/listings/:id/reviews", reviewsRouter);
+app.use("/", userRouter);
+
+// ================= ERROR HANDLER =================
+app.use((err, req, res, next) => {
+  console.log(err);
+  const { status = 500, message = "Something went wrong" } = err;
+  res.status(status).render("listings/error.ejs", { message });
+});
+
+// ================= 404 HANDLER =================
+app.use((req, res) => {
+  res.status(404).redirect("/listings");
+});
+
+// ================= START SERVER =================
+main()
+  .then(() => {
+    console.log("MongoDB connected");
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.log("DB connection failed:", err);
+  });
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
